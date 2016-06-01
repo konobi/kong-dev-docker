@@ -56,10 +56,16 @@ RUN cd /root/source && wget https://releases.hashicorp.com/serf/0.7.0/serf_0.7.0
         unzip serf_*.zip && \
         cp -p serf /usr/local/bin/serf
 
-RUN mkdir /kong/temp
+RUN mkdir /kong/temp /kong/plugins /kong/deps
 
+# Setup luajit and luarocks paths ready for openresty
 ENV LUA_PATH='/opt/luarocks/share/lua/5.1/?.lua;/opt/luarocks/share/lua/5.1/?/init.lua;./?.lua;/opt/luajit/share/luajit-2.1.0-beta2/?.lua;/usr/local/share/lua/5.1/?.lua;/usr/local/share/lua/5.1/?/init.lua;/opt/luajit/share/lua/5.1/?.lua;/opt/luajit/share/lua/5.1/?/init.lua'
 ENV LUA_CPATH='/opt/luarocks/lib/lua/5.1/?.so;./?.so;/usr/local/lib/lua/5.1/?.so;/opt/luajit/lib/lua/5.1/?.so;/usr/local/lib/lua/5.1/loadall.so'
+
+# Add local developer plugins
+ENV LUA_PATH="/kong/plugins/?/init.lua;$LUA_PATH"
+ENV LUA_PATH="/kong/deps/share/lua/5.1/?.lua;/kong/deps/share/lua/5.1/?/init.lua;$LUA_PATH"
+ENV LUA_CPATH="/kong/deps/lib/lua/5.1/?.so;/kong/deps/lib/lua/5.1/loadall.so;$LUA_CPATH"
 
 # Proxy ports
 EXPOSE 8000:8000
