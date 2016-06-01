@@ -49,14 +49,12 @@ RUN cd /root/source && wget https://openresty.org/download/openresty-1.9.7.4.tar
 RUN luarocks install kong
 
 RUN sed -i 's#/etc/kong/#/kong/etc/#g' /opt/luarocks/share/lua/5.1/kong/constants.lua
-ADD root/kong.yml /kong/etc/kong.yml
+ADD root/ /kong
 
 RUN echo -e "\n\nuser=root\n" >> /etc/dnsmasq.conf
 RUN cd /root/source && wget https://releases.hashicorp.com/serf/0.7.0/serf_0.7.0_linux_amd64.zip && \
         unzip serf_*.zip && \
         cp -p serf /usr/local/bin/serf
-
-RUN mkdir /kong/temp /kong/plugins /kong/deps
 
 # Setup luajit and luarocks paths ready for openresty
 ENV LUA_PATH='/opt/luarocks/share/lua/5.1/?.lua;/opt/luarocks/share/lua/5.1/?/init.lua;./?.lua;/opt/luajit/share/luajit-2.1.0-beta2/?.lua;/usr/local/share/lua/5.1/?.lua;/usr/local/share/lua/5.1/?/init.lua;/opt/luajit/share/lua/5.1/?.lua;/opt/luajit/share/lua/5.1/?/init.lua'
